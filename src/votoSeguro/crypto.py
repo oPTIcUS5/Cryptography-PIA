@@ -79,3 +79,70 @@ def generate_keys():
 def public_encryption_spki_base64():
 
     public = serialization.load_pem_public_key((DATA / "encryption_public.pem").read_bytes())
+
+    return b64(public.public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo))
+
+
+def validate_ballot_envelope(envelope):
+
+    if not isinstance(envelope, dict) or set(envelope) != {"wrapped_key", "nonce", "ciphertext"}:
+        raise ValueError("sobre del voto incompleto")
+
+    wrapped = unb64(envelope["wrapped_key"])
+    nonce = unb64(envelope["nonce"])
+    ciphertext = unb64(envelope["ciphertext"])
+
+    if len(wrapped) != 384 or len(nonce) != 12 or not 17 <= len(ciphertext) <= 4096:
+        raise ValueError("Tamanios criptgoraficos incorrectos")
+    
+    return {key: envelope[key] for key in ("wrapped_key", "nonce", "ciphertext")}
+
+
+def encrypt_ballot_for_test(candidate_id):
+
+    key = AESGCM.generate_key(bit_length=256)
+
+    nonce = __import__("secrets").token_bytes(12)
+    plaintext = canonical({"election_id": ELECTION_ID, "candidate_id": candidate_id})
+    ciphertext = AESGCM(key).encrypt(nonce, plaintext, ELECTION_ID.encode())
+
+    public = serialization.load_pem_public_key((DATA / "encryption_public.pem").read_bytes())
+    wrapped = public.encrypt(key, padding.OAEP(mgf=padding.MGF1(hashes.SHA256()),
+                                               algorithm=hashes.SHA256(), label=None))
+    
+    return {"wrapped_key": b64(wrapped), "nonce": b64(nonce), "ciphertext": b64(ciphertext)}
+
+
+def decrypt_ballot(envelope):
+    private = serialization.load_pem_private_key((DATA / "encryption_private.pem").read_bytes(), password=None)
+    aes_key = private.decrypt(unb64(envelope["wrapped_key"]),
+                              padding.OAEP(mgf=padding.MGF1(hashes.SHA256()),
+                                           algorithm=hashes.SHA256(), label=None))
+    
+    plaintext = AESGCM(aes_key).decrypt(unb64(envelope["nonce"]),
+                                        unb64(envelope["ciphertext"]), ELECTION_ID.encode())
+    
+    message = json.loads(plaintext)
+
+    if not isinstance(message, dict) or set(message) != {"election_id", "candidate_id"}:
+        raise ValueError("Formato interno incorrecto")
+    
+    if message["election_id"] != ELECTION_ID:
+        raise ValueError("Elección incorrecta")
+    
+    return message["candidate_id"]
+
+
+def sign_manifest(manifest):
+
+    signer = serialization.load_pem_private_key((DATA / "signing_private.pem").read_bytes(), password=None)
+
+    return b64(signer.sign(canonical(manifest)))
+
+
+def verify_manifest(manifest, signature):
+
+    public = serialization.load_pem_public_key((DATA / "signing_public.pem").read_bytes())
+    public.verify(unb64(signature), canonical(manifest))
+    
+    return True
