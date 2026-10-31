@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="Prototipo académico de votación electrónica, sin votaciones reales.">
+    <title>{% block title %}VotoSeguro{% endblock %} · PIA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    
+    <header class="topbar">
+        <!--VOto seguro link-->
+        <a class="brand" href="/">◈VotoSeguro</a>
+
+        <!--Navegacion de auditoria y resultados-->
+        <nav>
+            <a href="/auditoria">Auditoría</a><a href="/resultados">Resultados</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="warning">
+            DEMOSTRACIÓN ACADÉMICA · Votantes y candidaturas ficticios · No usar en elecciones reales
+        </div>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        PIA de Criptografía · Elección ficticia 2026 · Prototipo con autoridad honesta
+    </footer>
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>
