@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Resultados{% endblock %}
+{% block content %}
+<section class="card">
+    <p class="eyebrow">ESCRUTINIO FICTICIO</p>
+    <h1>Resultados de demostración</h1>
+    {% if record %}
+
+    <p class="ok">Manifiesto generado y firmado digitalmente por la autoridad de prueba.</p>
+
+    <table>
+        <tr>
+            <th>Candidatura</th>
+            <th>Votos</th>
+        </tr>
+        {% for id, name in candidates.items() %}
+        <tr>
+            <td>{{ name }}</td>
+            <td>{{ record.manifest.counts[id] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p>Total de sobres: {{ record.manifest.ballots_received }} · Inválidos: {{ record.manifest.invalid_ballots }}</p>
+
+    <p class="small">
+        Firma Ed25519: 
+        <code class="hash">{{ record.signature_base64 }}</code>
+    </p>
+    {% else %}
+    <p>El escrutinio todavía no se ha publicado. Estado actual: {{ status }}.</p>
+
+    <p class="small">Para generar resultados, el administrador debe cerrar y escrutar desde la terminal.</p>
+    {% endif %}
+    
+</section>
+{% endblock %}
