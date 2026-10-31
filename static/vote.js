@@ -70,22 +70,30 @@ if (form) form.addEventListener("submit", async event => {
     const button = document.querySelector("#submit-vote");
     const feedback = document.querySelector("#feedback");
     const selection = new FormData(form).get("candidate");
+
     if (!selection) return;
     button.disabled = true;
     feedback.textContent = "Cifrando y registrando…";
+
     try {
         const confResponse = await fetch("/api/config", {cache: "no-store"});
+
         if (!confResponse.ok) throw new Error("No fue posible obtener la clave pública");
         const election = await confResponse.json();
+
         if (election.status !== "open") throw new Error("La elección está cerrada");
+
         const payload = await encryptVote(election, selection);
+
         const response = await fetch("/api/vote", {
         method: "POST", credentials: "same-origin",
         headers: {"Content-Type": "application/json", "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content},
         body: JSON.stringify(payload)
         });
+
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || "No fue posible registrar el voto");
+        
         // No presentar la selección como comprobante público.
         window.location.assign(result.verification_url);
     } catch (error) {
