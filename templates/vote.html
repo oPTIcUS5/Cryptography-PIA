@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Emitir voto{% endblock %}
+{% block head %}
+<meta name="csrf-token" content="{{ token }}">{% endblock %}
+{% block content %}
+<section class="card">
+
+    <div class="flex">
+        <div>
+            <p class="eyebrow">PASO 2 DE 3</p>
+            <h1>{{ election }}</h1>
+        </div>
+        <form method="post" action="/logout"><input type="hidden" name="csrf" value="{{ token }}">
+            <button class="secondary" type="submit">Salir</button>
+        </form>
+    </div>
+
+    <p>Selecciona una candidatura ficticia. El cifrado ocurre dentro del navegador mediante Web Crypto API.</p>
+    {% if status != 'open' %}
+    <p class="error">La elección está cerrada y ya no admite votos.</p>
+    {% elif has_voted %}
+    <p class="ok">Esta cuenta ya registró un voto. No se permite votar dos veces.</p>
+    {% else %}
+
+    <form id="vote-form">
+        <fieldset>
+            <legend>Selecciona exactamente una opción</legend>
+            {% for id, name in candidates.items() %}
+
+            <label class="choice">
+                <input type="radio" name="candidate" value="{{ id }}" required> <span>{{ name }}</span>
+            </label>
+            {% endfor %}
+        </fieldset>
+        
+        <button type="submit" id="submit-vote">Cifrar y registrar mi voto</button>
+    </form>
+    
+    <div id="feedback" aria-live="polite"></div>
+    {% endif %}
+
+</section>
+{% endblock %}
+{% block scripts %}{% if status == 'open' and not has_voted %}<script src="{{ url_for('static', filename='vote.js') }}" defer></script>{% endif %}{% endblock %}
