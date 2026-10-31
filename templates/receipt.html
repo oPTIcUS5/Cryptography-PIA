@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Comprobante{% endblock %}
+{% block content %}
+<section class="card">
+    <p class="eyebrow">PASO 3 DE 3</p>
+    <h1>Comprobante de registro</h1>
+
+    <p class="ok">El sobre cifrado está registrado en la urna.<p>
+
+    <p>Huella SHA-256 del sobre cifrado (no revela la selección electoral):</p>
+
+    <code class="hash">{{ ballot.receipt }}</code>
+
+    <p class="small">Huella de la cadena: 
+        <code class="hash">{{ ballot.chain_hash }}</code>
+    </p>
+
+    <p>Fecha UTC: {{ ballot.created_at }}</p>
+
+    <a class="btnlink" href="/auditoria">Consultar registros públicos</a>
+
+    <p class="small">Este comprobante prueba inclusión en esta base de datos de demostración; no demuestra por sí mismo que el voto será contado correctamente.</p>
+</section>
+{% endblock %}
