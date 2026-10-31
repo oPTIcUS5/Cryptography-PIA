@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Auditoría{% endblock %}
+{% block content %}
+<section class="card">
+
+    <p class="eyebrow">REGISTRO PÚBLICO</p>
+    <h1>Auditoría de sobres cifrados</h1>
+    <p>Estado: 
+        <strong>{{ status }}</strong> · Sobres recibidos: <strong>{{ total }}</strong>
+    </p>
+
+    <p>No se muestran datos personales ni elecciones descifradas.</p>
+    <div class="table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        #</th>
+                            <th>Huella del voto</th>
+                        <th>Cadena
+
+                    </th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                {% for row in records %}
+                <tr>
+                    <td>{{ row.position }}</td>
+                    <td><code>{{ row.receipt }}</code></td>
+                    <td><code>{{ row.chain_hash }}</code></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3">Sin registros todavía</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <p class="small">La integridad pública queda anclada al manifiesto firmado al cerrar la elección.</p>
+
+</section>{% endblock %}
