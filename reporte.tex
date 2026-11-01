@@ -1,0 +1,72 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{margin=2.35cm}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage{xcolor,graphicx,float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit}
+\usetikzlibrary{babel}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!55!black,pdftitle={VotoSeguro - PIA de Criptografía}}
+\usepackage{listings}
+\definecolor{navy}{HTML}{173054}
+\definecolor{bluea}{HTML}{2368AE}
+\definecolor{pale}{HTML}{F1F6FC}
+\definecolor{teal}{HTML}{168579}
+\definecolor{grayb}{HTML}{5C697B}
+\newcommand{\concepto}[1]{\textbf{\color{navy}#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\missingimage}[1]{\begin{center}\fcolorbox{bluea}{pale}{\parbox[c][2.2cm][c]{0.82\linewidth}{\centering\small\color{grayb}Evidencia pendiente: #1\\Captura auténtica al ejecutar en MacBook}}\end{center}}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{navy}{VotoSeguro -- PIA}}
+\fancyhead[R]{\small\textcolor{grayb}{Criptografía aplicada}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\headheight}{15pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setcounter{tocdepth}{2}
+\lstset{basicstyle=\ttfamily\footnotesize,breaklines=true,frame=single,rulecolor=\color{gray!40},backgroundcolor=\color{pale},columns=fullflexible,showstringspaces=false}
+\begin{document}
+\begin{titlepage}
+\centering
+\vspace*{1.8cm}
+{\Large\bfseries Proyecto Integrador de Aprendizaje\par}
+\vspace{0.45cm}
+{\color{bluea}\rule{0.82\linewidth}{2.2pt}\par}
+\vspace{1.0cm}
+{\Huge\bfseries\color{navy}VotoSeguro\par}
+\vspace{0.32cm}
+{\Large Sistema de Votación Electrónica Segura\par}
+\vspace{.8cm}
+{\large Prototipo académico para una elección municipal ficticia\par}
+\vspace{.8cm}
+\fcolorbox{bluea}{pale}{\parbox{0.83\linewidth}{\centering\vspace{7pt}\textbf{Modelo de amenaza definido por el docente}\\La autoridad electoral es honesta. Se estudia la protección frente a ataques externos.\\No se propone el uso de este software en elecciones reales.\vspace{7pt}}}
+\vfill
+\begin{tabular}{>{\bfseries}p{4cm}p{8cm}}
+Alumno: & [Nombre completo]\\[5pt]
+Matrícula: & [Matrícula]\\[5pt]
+Materia: & Criptografía\\[5pt]
+Docente: & [Nombre del docente]\\[5pt]
+Institución: & [Institución]\\[5pt]
+Entrega: & 14 de noviembre de 2026\\
+\end{tabular}
+\vfill
+Monterrey, Nuevo León, México\\2026
+\end{titlepage}
+\tableofcontents\newpage
+\input{docs/01_contexto}
+\input{docs/02_requisitos}
+\input{docs/03_protocolos}
+\input{docs/04_implementacion}
+\input{docs/05_seguridad}
+\input{docs/06_pruebas}
+\input{docs/07_conclusiones}
+\end{document}
