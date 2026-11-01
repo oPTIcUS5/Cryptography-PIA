@@ -1,0 +1,25 @@
+\begin{tikzpicture}[>=latex,font=\small,node distance=0.6cm,
+boxstep/.style={rectangle,draw=bluea,fill=bluea!7,rounded corners=2mm,text width=6cm,align=center,minimum height=.85cm},
+decision/.style={diamond,draw=teal,fill=teal!8,aspect=2.6,text width=3.5cm,align=center,inner sep=1pt},
+edge/.style={-{Latex[length=2.5mm]},thick,draw=navy}]
+
+\node[boxstep] (start) {Inicio: solicitar boleta};
+\node[decision,below=of start] (login) {¿Sesión y CSRF válidos?};
+\node[boxstep,below=0.95cm of login] (enc) {En el navegador: generar clave AES y nonce; cifrar con AES-GCM y RSA-OAEP};
+\node[boxstep,below=of enc] (db) {Enviar sobre cifrado e iniciar transacción SQLite inmediata};
+\node[decision,below=0.7cm of db] (elig) {¿Cuenta sin voto previo y elección abierta?};
+\node[boxstep,below=1.1cm of elig] (save) {Marcar participación, guardar sobre y calcular cadena SHA-256};
+\node[boxstep,below=of save] (end) {Confirmar transacción y devolver comprobante};
+\node[boxstep,right=2.7cm of login] (reject1) {Rechazar solicitud};
+\node[boxstep,right=2.7cm of elig] (reject2) {Deshacer transacción y rechazar};
+
+\draw[edge] (start)--(login);
+\draw[edge] (login)--node[right]{sí}(enc);
+\draw[edge] (login.east)--node[above]{no}(reject1.west);
+\draw[edge] (enc)--(db);
+\draw[edge] (db)--(elig);
+\draw[edge] (elig)--node[right]{sí}(save);
+\draw[edge] (elig.east)--node[above]{no}(reject2.west);
+\draw[edge] (save)--(end);
+
+\end{tikzpicture}

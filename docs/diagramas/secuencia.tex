@@ -1,0 +1,32 @@
+\begin{tikzpicture}[>=latex,font=\scriptsize,
+part/.style={draw=bluea,rounded corners=2mm,fill=bluea!8,minimum width=3.2cm,minimum height=0.72cm,align=center},
+msg/.style={-{Latex[length=2mm]},draw=navy,thick},
+return/.style={-{Latex[length=2mm]},draw=teal,dashed,thick}]
+
+\node[part] at (0,0) (a) {Ciudadano / navegador};
+\node[part] at (5,0) (b) {Servidor Flask};
+\node[part] at (10,0) (c) {SQLite};
+\node[part] at (15,0) (d) {Autoridad (CLI)};
+
+\foreach \x in {0,5,10,15}{\draw[gray,densely dashed] (\x,-.5)--(\x,-10.9);}
+
+\draw[msg] (0,-1) -- node[above]{1. Credenciales + CSRF} (5,-1);
+\draw[msg] (5,-1.7) -- node[above]{2. Consulta Argon2id} (10,-1.7);
+\draw[return] (10,-2.2) -- node[above]{3. Resultado de hash} (5,-2.2);
+\draw[return] (5,-2.7) -- node[above]{4. Sesión autenticada} (0,-2.7);
+\draw[msg] (0,-3.5) -- node[above]{5. Consulta clave RSA pública} (5,-3.5);
+\draw[return] (5,-4) -- node[above]{6. SPKI + elección} (0,-4);
+
+\node[draw=teal,fill=teal!8,rounded corners,align=center] at (0,-4.9) {7. Genera AES + nonce\\ Cifra boleta y clave AES};
+
+\draw[msg] (0,-5.8) -- node[above]{8. Sobre cifrado + CSRF} (5,-5.8);
+\draw[msg] (5,-6.5) -- node[above]{9. UPDATE atómico + INSERT} (10,-6.5);
+\draw[return] (10,-7) -- node[above]{10. Recibo SHA-256} (5,-7);
+\draw[return] (5,-7.5) -- node[above]{11. Comprobante} (0,-7.5);
+\draw[msg] (15,-8.3) -- node[above]{12. Cierra la elección} (10,-8.3);
+\draw[msg] (15,-9.0) -- node[above]{13. Consulta sobres cifrados} (10,-9.0);
+\draw[return] (10,-9.5) -- node[above]{14. Sobres + cadena} (15,-9.5);
+
+\node[draw=teal,fill=teal!8,rounded corners,align=center] at (15,-10.25) {15. Descifra / cuenta / firma\\ manifiesto con Ed25519};
+
+\end{tikzpicture}

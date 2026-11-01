@@ -1,0 +1,21 @@
+\begin{tikzpicture}[>=latex,font=\small,
+box/.style={draw=bluea,rounded corners=3mm,fill=bluea!7,minimum width=3.8cm,minimum height=1.7cm,align=center},
+dat/.style={draw=teal,rounded corners=2mm,fill=teal!8,minimum width=4.2cm,minimum height=1.5cm,align=center},
+arrow/.style={-{Latex[length=3mm]},thick,draw=navy}]
+
+\node[box] (web) at (0,0) {\textbf{Navegador del votante}\\ HTML / JavaScript\\ Web Crypto API};
+\node[box] (flask) at (6.0,0) {\textbf{Aplicación Flask}\\ sesión / Argon2id / CSRF\\ API de voto};
+\node[dat] (voters) at (12.4,1.7) {\textbf{SQLite: voters}\\ usuario / hash Argon2id\\ marca de participación};
+\node[dat] (ballots) at (12.4,-1.7) {\textbf{SQLite: ballots}\\ sobres cifrados / huellas\\ cadena SHA-256};
+\node[box] (authority) at (18.9,-1.7) {\textbf{Autoridad honesta}\\ CLI: cierre / escrutinio\\ RSA privada / Ed25519};
+
+
+\draw[arrow] (web) -- node[above,align=center]{HTTP local + CSRF\\sobre cifrado} (flask);
+\draw[arrow] (flask) -- (voters);
+\draw[arrow] (flask) -- (ballots);
+\draw[arrow] (ballots) -- node[above]{lectura offline} (authority);
+\draw[arrow,dashed] (authority.south) -- ++(0,-1.2) -| node[below,pos=.25]{resultados firmados y auditoría} (flask.south);
+
+\node[draw=grayb,fill=gray!7,rounded corners=2mm,align=center,font=\footnotesize] at (10.2,-4.4) {Clave \textbf{pública} RSA en el navegador; clave \textbf{privada} solamente en el escrutinio local.\\ Las dos tablas SQLite comparten el mismo archivo físico: no existe anonimato fuerte.};
+
+\end{tikzpicture}
