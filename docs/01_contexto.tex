@@ -1,0 +1,26 @@
+\section{Introducción y contexto}
+La votación electrónica pretende permitir que ciudadanos expresen su preferencia electoral por medios informáticos. Sin embargo, un sistema electoral debe proteger datos sensibles sin perder la capacidad de comprobar que las operaciones autorizadas fueron registradas correctamente. Esta combinación plantea desafíos de confidencialidad, integridad, autenticación y auditabilidad.
+
+Este trabajo presenta \textbf{VotoSeguro}, un prototipo local que simula una elección municipal con ciudadanos y candidaturas ficticios. La autoridad prepara el proceso, registra participantes de prueba, abre la urna, cierra la elección y publica un resultado firmado.
+
+\subsection{Planteamiento del problema}
+Un gobierno municipal hipotético requiere un mecanismo para que los electores registrados emitan un único voto desde un equipo conectado. Un atacante externo podría intentar robar credenciales, reemplazar mensajes cifrados, alterar registros o repetir envíos. Se busca minimizar estas amenazas mediante métodos criptográficos públicos y bibliotecas conocidas.
+
+\subsection{Objetivo general}
+Diseñar, implementar y evaluar un prototipo educativo de votación electrónica que combine autenticación de usuarios, cifrado híbrido de boletas, control transaccional de voto único, registros de integridad y firma digital de resultados.
+
+\subsection{Objetivos específicos}
+\begin{enumerate}
+\item Proteger las contraseñas de las cuentas ficticias con Argon2id.
+\item Cifrar en el navegador la selección mediante AES-256-GCM y RSA-OAEP.
+\item Impedir múltiples votos por cuenta de forma atómica en SQLite.
+\item Producir un comprobante de registro que no contenga la selección electoral.
+\item Elaborar un registro encadenado mediante SHA-256 y firmar el resultado final con Ed25519.
+\item Probar casos exitosos, datos inválidos, modificaciones deliberadas y solicitudes concurrentes.
+\end{enumerate}
+
+\subsection{Alcance y modelo de confianza}
+\textbf{Supuesto esencial:} la autoridad electoral es honesta, administra correctamente las claves y no modifica intencionalmente la elección. El programa se orienta a demostrar resistencia frente a ciertos ataques \emph{externos}. No acredita anonimato absoluto, resistencia a coacción, seguridad del dispositivo del votante ni exactitud verificable universal del escrutinio. No utiliza votantes verdaderos ni datos de elecciones reales.
+
+\subsection{Aporte del proyecto}
+La parte original no consiste en inventar cifrados nuevos, sino en \emph{componer de manera justificada} algoritmos existentes dentro de un flujo coherente: autenticación, emisión, registro, auditoría y recuento.
