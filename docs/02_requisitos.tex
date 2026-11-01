@@ -1,0 +1,41 @@
+\section{Requisitos del sistema y actores}
+\subsection{Actores}
+\begin{description}
+\item[Ciudadano ficticio:] cuenta autorizada que accede, elige una opción y recibe un comprobante.
+\item[Autoridad electoral honesta:] configura la elección, custodia las claves privadas, cierra la urna y ejecuta el escrutinio local.
+\item[Atacante externo:] puede intentar enviar peticiones inválidas, manipular datos en tránsito o aprovechar credenciales robadas; no controla la autoridad ni las claves privadas.
+\item[Observador:] consulta huellas de sobres cifrados y el manifiesto de resultados firmado.
+\end{description}
+
+\subsection{Requisitos funcionales}
+\begin{longtable}{p{1.4cm}p{12.5cm}}
+\toprule ID & Requisito\\ \midrule\endhead
+RF-01 & Crear un padrón \emph{ficticio} de cuentas sin necesidad de servicios oficiales externos.\\
+RF-02 & Comprobar usuario y contraseña, sin conservar esta última en texto claro.\\
+RF-03 & Mostrar candidatos predefinidos y cifrar la elección localmente antes del envío.\\
+RF-04 & Registrar a lo sumo un voto por cuenta mediante una actualización transaccional.\\
+RF-05 & Emitir una huella SHA-256 del sobre cifrado sin incluir la candidatura elegida.\\
+RF-06 & Registrar una cadena de huellas para detectar modificaciones.\\
+RF-07 & Permitir cierre de urna y escrutinio offline de la autoridad honesta.\\
+RF-08 & Generar resultados firmados y un listado de auditoría sin identidades.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Requisitos no funcionales}
+\begin{itemize}
+\item \concepto{Confidencialidad:} el servidor de votación ordinario no requiere conocer la clave privada para almacenar sobres.
+\item \concepto{Integridad:} AES-GCM detecta alteraciones del contenido cifrado durante el escrutinio; SHA-256 y Ed25519 apoyan la integridad de la publicación.
+\item \concepto{Autenticación:} se usan contraseñas verificadas con Argon2id y sesiones HTTP protegidas para el entorno local.
+\item \concepto{Disponibilidad:} se aceptan limitaciones propias de SQLite y un único proceso de demostración.
+\item \concepto{Mantenibilidad:} diseño por módulos, funciones pequeñas, pruebas y documentación.
+\end{itemize}
+
+\subsection{Criterios de aceptación}
+\begin{enumerate}
+\item Una cuenta válida puede emitir exactamente un voto y recibir un comprobante.
+\item La misma cuenta no logra registrar un segundo voto aunque dos solicitudes lleguen simultáneamente.
+\item Si se modifica un byte de la boleta cifrada, el descifrado autenticado falla.
+\item Si un registro almacenado se altera, la auditoría detecta discrepancia.
+\item Los resultados tienen una firma Ed25519 verificable.
+\item Un observador no encuentra el nombre de usuario ni la candidatura en el registro público de huellas.
+\end{enumerate}

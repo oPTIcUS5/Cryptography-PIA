@@ -1,0 +1,36 @@
+\section{Selección de métodos, seguridad y escalabilidad}
+\subsection{Justificación de algoritmos}
+\begin{longtable}{p{2.4cm}p{4.3cm}p{6.1cm}}
+\toprule Método & Ventaja para el caso & Limitaciones y razones de selección\\\midrule\endhead
+AES-256-GCM & Cifrado autenticado veloz para una boleta pequeña & Se debe usar un nonce distinto para cada cifrado con la misma clave; aquí cada voto genera una clave AES nueva y nonce aleatorio.\\
+RSA-OAEP & Protege una clave AES corta con la clave pública de la autoridad & Tamaño de clave y operaciones más costosos que la criptografía simétrica; se elige para enseñar cifrado híbrido.\\
+Argon2id & Resiste mejor ataques de adivinación que los hashes rápidos & Tiene costo de memoria y CPU ajustable; no elimina robo de credenciales ni phishing.\\
+SHA-256 & Huella determinista con resistencia a colisiones conocida & No es una firma ni ofrece secreto; una cadena no evita que su propietario reescriba la historia sin un ancla externa.\\
+Ed25519 & Firma compacta y verificación eficiente & No cifra, ni demuestra la corrección de los votos contados.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Modelo de amenazas}
+\begin{longtable}{p{3.5cm}p{5.4cm}p{4.2cm}}
+\toprule Amenaza externa & Control implementado & Riesgo residual\\\midrule\endhead
+Cambio de voto cifrado & AES-GCM valida etiqueta y AAD en escrutinio & El cambio puede ser almacenado antes de descubrirse; se marca inválido.\\
+Doble envío concurrente & Actualización condicional en SQLite con transacción inmediata & Cuentas falsas si el padrón inicial no es confiable.\\
+Contraseña robada & Hash Argon2id y sesiones con CSRF & No evita suplantación cuando el atacante conoce la contraseña.\\
+Alteración de registro & Cadena SHA-256; manifiesto firmado después del cierre & Antes del cierre la autoridad honesta sigue siendo una premisa esencial.\\
+Suplantación del servidor & No se modela en localidad; para red real es obligatorio TLS autenticado & Si el código JS servido es malicioso, puede revelar el voto.\\
+Exposición de claves & El servidor web sólo carga la clave pública; privada en ruta local & Sin HSM; usuario del sistema con privilegios puede leer claves.\\
+DoS / sobrecarga & Límite de tamaño HTTP, SQLite para práctica local & Sin balanceador ni anti-DDoS; capacidad limitada.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Privacidad, transparencia y verificabilidad}
+Se separa \emph{lógicamente} la lista de votantes de los sobres cifrados. Los comprobantes y registros públicos muestran hashes de sobres, no el nombre de usuario o la elección. El observador puede revisar la cadena y firma final; ello permite detectar ciertas alteraciones, pero \textbf{no prueba} que el contenido cifrado fue descifrado correctamente ni que todos los ciudadanos votaron libremente. Según los principios VVSG, la confidencialidad del voto, protección de datos y verificabilidad son objetivos independientes \cite{nistvvsg}.
+
+\subsection{Por qué no usar blockchain}
+Se decidió usar una cadena SHA-256 más firma final. Una blockchain es más que una secuencia de hashes: requiere consenso, reglas de participación y un modelo de confianza distribuida. Como el escenario presupone una autoridad electoral honesta, no se necesita incorporar consenso para demostrar cifrado, integridad y registro. La propuesta tampoco debe confundirse con una elección públicamente verificable de extremo a extremo.
+
+\subsection{Escalabilidad}
+SQLite es adecuada para pruebas locales y pequeñas cantidades de votos. En un escenario municipal real habría que migrar a una base de datos transaccional escalable, separar servicios, usar colas y monitoreo, gestionar claves en HSM, diseñar un protocolo de anonimato verificable y contar con auditorías independientes y mecanismos antifraude. La interfaz es adaptable a móviles, pero no se ha realizado una prueba de carga municipal.
+
+\subsection{Criptografía postcuántica como trabajo futuro}
+RSA y Ed25519 pertenecen a la criptografía de clave pública clásica, no resistente a una computadora cuántica criptográficamente relevante. Una evolución podría estudiar ML-KEM y ML-DSA, pero migrar requeriría rediseñar el protocolo y reevaluar rendimiento y seguridad; no se afirma que esta versión sea postcuántica.

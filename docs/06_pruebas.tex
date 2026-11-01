@@ -1,0 +1,39 @@
+\section{Plan de verificación, resultados y evidencias}
+\subsection{Pruebas de módulo ejecutadas}
+Se diseñaron pruebas unitarias sobre la lógica criptográfica y la persistencia; se ejecutaron en el entorno de preparación del proyecto. Resultado observado: \textbf{20 pruebas aprobadas}. Entre los casos están los siguientes:
+
+\begin{longtable}{p{4.2cm}p{8.9cm}}
+\toprule Caso & Resultado esperado\\\midrule\endhead
+Inicio de sesión correcto e incorrecto & Aceptar sólo la contraseña que verifica el hash Argon2id.\\
+Reversibilidad AES + RSA & Descifrar la misma candidatura que fue cifrada.\\
+Manipular ciphertext o nonce & Rechazo por error de autenticación AES-GCM.\\
+Sobre inválido & Rechazo por estructura, Base64 o tamaños incorrectos.\\
+Dos votos con una misma cuenta & Aceptar primero, rechazar segundo.\\
+Dos envíos concurrentes & Solamente una transacción exitosa.\\
+Cuenta inexistente & El sistema rechaza el intento.\\
+Modificar tabla de boletas & Auditoría de cadena falla.\\
+Cierre de elección & No se aceptan más votos.\\
+Tally y firma & Se cuentan 2 votos A, 1 B, 0 C y se valida Ed25519.\\
+Alterar conteos firmados & La verificación de firma falla.\\
+Cambio de la cadena publicada & La auditoría devuelve falso.\\
+Cifrado JS/Python & Una boleta cifrada con Web Crypto (Node) es descifrable en Python.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Demostración de escrutinio desde la terminal}
+En una ejecución aislada con tres cuentas de prueba, se registraron las selecciones A, C y A; después de cerrar la elección, el programa generó un resultado de \textbf{2 votos para A, 0 para B y 1 para C}, sin boletas inválidas. La verificación de la firma Ed25519 y de la cadena devolvió un estado válido. Esta ejecución corresponde a datos ficticios generados para la validación del software.
+
+\subsection{Verificación pendiente en el equipo del alumno}
+\textbf{Aclaración metodológica:} se comprobó la lógica mediante tests, pero en el entorno de preparación no se pudo abrir el servidor Flask por falta de esa dependencia. El funcionamiento gráfico completo deberá verificarse con \code{python launcher.py} después de instalar \code{requirements.txt} en macOS. No se presentan capturas ficticias como si fueran resultados empíricos.
+
+\subsection{Capturas a incorporar}
+\missingimage{Formulario de inicio de sesión con usuario ficticio (sin contraseña)}
+\missingimage{Boleta y tres candidaturas ficticias}
+\missingimage{Comprobante SHA-256 de un voto confirmado}
+\missingimage{Intento repetido y rechazo del sistema}
+\missingimage{Auditoría, resultados y terminal con pytest}
+
+Para sustituir cada recuadro en Overleaf, subir la captura a la carpeta \code{evidencias/} y reemplazar la instrucción \code{\\missingimage\{...\}} por \code{\\includegraphics[width=.85\\linewidth]\{evidencias/nombre.png\}}.
+
+\subsection{Criterio para aceptar el PIA}
+El prototipo demuestra criptografía aplicada al contexto definido, pero se mantiene la distinción entre \emph{prueba unitaria exitosa} y \emph{certificación electoral}. El equipo deberá explicar explícitamente al evaluador esa diferencia.

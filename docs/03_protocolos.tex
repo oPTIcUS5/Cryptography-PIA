@@ -1,0 +1,74 @@
+\section{Especificación detallada de los protocolos}
+\subsection{Parámetros criptográficos}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{p{4cm}X}
+\toprule Componente & Parámetros y función\\\midrule
+RSA-OAEP & Par RSA de 3072 bits; OAEP con SHA-256 y MGF1-SHA-256; encapsula la clave AES.\\
+AES-GCM & Clave aleatoria de 256 bits, nonce aleatorio de 96 bits y etiqueta de autenticación de 128 bits; protege el voto.\\
+Argon2id & 19 MiB de memoria, dos iteraciones y paralelismo 1; verifica contraseñas con sal incorporada.\\
+SHA-256 & Huellas hexadecimales de 256 bits de sobres cifrados y de la cadena.\\
+Ed25519 & Firma del manifiesto final de escrutinio.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Protocolo P0: preparación electoral}
+\begin{enumerate}
+\item La autoridad ejecuta \code{python manage.py init}; se generan claves RSA y Ed25519 de prueba.
+\item Se crea la base SQLite con un padrón simulado de cinco cuentas, contraseñas aleatorias y hashes Argon2id.
+\item La clave RSA \emph{pública} se entrega al navegador mediante \code{GET /api/config}. La clave privada permanece fuera del proceso web.
+\item Se definen el identificador \code{MUNICIPAL-DEMO-2026} y las opciones A, B y C. La urna comienza en estado \code{open}.
+\end{enumerate}
+\textbf{Acuerdo de claves:} en este prototipo no se ejecuta Diffie--Hellman como aplicación propia. La clave simétrica se genera en cada navegador y se \emph{transporta protegida} mediante RSA-OAEP; TLS sería obligatorio para la autenticación del origen y la protección del canal en cualquier despliegue remoto.
+
+\subsection{Protocolo P1: autenticación}
+\begin{enumerate}
+\item El usuario solicita el formulario de acceso y recibe un token anti-CSRF en una sesión firmada.
+\item Envía usuario, contraseña y token anti-CSRF.
+\item El servidor consulta el hash Argon2id del usuario y comprueba la contraseña. En éxito, renueva la sesión y limita su duración.
+\item Se permite continuar a la boleta solamente si la sesión es válida y la elección está abierta.
+\end{enumerate}
+El hash Argon2id no es cifrado reversible de contraseña; es una función de derivación lenta resistente a ataques de adivinación \cite{owasp}.
+
+\subsection{Protocolo P2: cifrado híbrido y emisión}
+Sean $M$ la codificación JSON de la boleta, $K$ una clave AES aleatoria, $N$ un nonce y $A$ el identificador de elección usado como datos adicionales autenticados (AAD).
+\begin{align}
+K &\xleftarrow{\$}\{0,1\}^{256},\qquad N\xleftarrow{\$}\{0,1\}^{96},\\
+(C,T)&=\operatorname{AES\text{-}GCM\text{-}Enc}(K,N,M,A),\\
+W &= \operatorname{RSA\text{-}OAEP\text{-}Enc}(PK_{E},K).
+\end{align}
+El navegador transmite \code{wrapped\_key} $=W$, \code{nonce} $=N$ y \code{ciphertext} $=C\|T$, codificados en Base64. No transmite el nombre del candidato en texto claro dentro de esta petición.
+
+El servidor comprueba la sesión, CSRF y tamaños del sobre. Inicia una transacción SQLite con \code{BEGIN IMMEDIATE}, actualiza \code{has\_voted} únicamente si era cero, guarda el sobre y confirma la transacción. Si la cuenta ya participó, rechaza la solicitud completa.
+
+\subsection{Protocolo P3: comprobante y cadena de integridad}
+Se calcula sobre una representación JSON canónica del sobre:
+\begin{equation}
+R_i=\operatorname{SHA256}(\operatorname{CanonicalJSON}(\text{election\_id},W_i,N_i,C_i\|T_i)).
+\end{equation}
+Con $H_0=00\ldots 00$ (64 caracteres hexadecimales):
+\begin{equation}
+H_i=\operatorname{SHA256}(H_{i-1}\,\|\,\texttt{:}\,\|\,i\,\|\,\texttt{:}\,\|\,R_i).
+\end{equation}
+La huella $R_i$ permite comprobar que un sobre aparece en la base de demostración. No contiene información de la candidatura en texto claro. Una cadena de hashes no constituye por sí misma una blockchain descentralizada.
+
+\subsection{Protocolo P4: cierre, descifrado y escrutinio}
+La autoridad cierra la urna y verifica los registros encadenados. Para cada sobre recupera:
+\begin{align}
+K&=\operatorname{RSA\text{-}OAEP\text{-}Dec}(SK_{E},W),\\
+M&=\operatorname{AES\text{-}GCM\text{-}Dec}(K,N,C\|T,A).
+\end{align}
+Si falla la etiqueta, el JSON o la identificación electoral, se cuenta como boleta inválida. Si el candidato pertenece a las opciones predefinidas, su contador aumenta en una unidad.
+
+\subsection{Protocolo P5: firma y verificación}
+La autoridad construye un manifiesto $D$ con totales, número de votos válidos e inválidos, fecha UTC y último hash $H_n$. Calcula:
+\begin{equation}
+\sigma=\operatorname{Ed25519.Sign}(SK_{F},\operatorname{CanonicalJSON}(D)).
+\end{equation}
+Un tercero valida $\operatorname{Ed25519.Verify}(PK_F,D,\sigma)$. Esto verifica autoría e integridad de la \emph{publicación}; no prueba que la autoridad haya contado correctamente los votos, lo cual exigiría verificabilidad criptográfica adicional.
+
+\subsection{Secuencia completa}
+\begin{figure}[H]\centering
+\resizebox{\linewidth}{!}{\input{docs/diagramas/secuencia.tex}}
+\caption{Intercambio entre votante, web, base de datos y autoridad honesta.}
+\end{figure}

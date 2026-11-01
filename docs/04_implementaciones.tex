@@ -1,0 +1,81 @@
+\section{Diseño e implementación del software}
+\subsection{Arquitectura modular}
+\begin{figure}[H]\centering
+\resizebox{\linewidth}{!}{\input{docs/diagramas/arquitectura.tex}}
+\caption{Arquitectura lógica. El almacén SQLite contiene dos tablas separadas, no dos servidores independientes.}
+\end{figure}
+
+\subsection{Lenguajes y tecnologías}
+\begin{longtable}{p{3.0cm}p{10.8cm}}
+\toprule Tecnología & Justificación técnica\\\midrule\endhead
+Python 3 & Facilita pruebas, modularidad e integración con bibliotecas de criptografía revisadas.\\
+Flask & Rutas de aplicación web sencillas, sesiones firmadas y plantillas Jinja2.\\
+JavaScript + Web Crypto & Cifra dentro del navegador; la selección no viaja en texto claro dentro del cuerpo de la petición. Web Crypto requiere un contexto seguro (HTTPS o localhost) \cite{mdn}.\\
+SQLite & Almacenamiento transaccional de uso único y control de concurrencia mediante \code{BEGIN IMMEDIATE}.\\
+\code{cryptography} & Implementaciones RSA-OAEP, AES-GCM y Ed25519 sin escribir primitivas manualmente.\\
+\code{argon2-cffi} & Implementación Argon2id para almacenar hashes de contraseñas.\\
+Pytest & Automatiza comprobación de casos normales, inválidos y concurrentes.\\
+LaTeX y TikZ & Documentación reproducible con fórmulas y diagramas vectoriales editables.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Estructura de archivos}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{p{5cm}X}
+\toprule Archivo & Función\\\midrule
+\code{app.py} & Rutas HTTP, autorización por sesión y protección CSRF.\\
+\code{launcher.py} & Arranque web local en \code{127.0.0.1:5000}.\\
+\code{manage.py} & Inicializar, cerrar, escrutar y verificar desde terminal.\\
+\code{src/votoseguro/config.py} & Identificador electoral, candidatos y constantes.\\
+\code{src/votoseguro/crypto.py} & Claves RSA, Ed25519, AES-GCM y funciones SHA-256.\\
+\code{src/votoseguro/storage.py} & SQLite, voto único y cadena hash.\\
+\code{src/votoseguro/services.py} & Argon2id, autenticación, auditoría y escrutinio.\\
+\code{static/vote.js} & Cifrado de boleta con Web Crypto API en el cliente.\\
+\code{templates/*.html} & Acceso, elección, comprobante, auditoría y resultados.\\
+\code{tests/test\_election.py} & Pruebas de integridad y comportamiento de los protocolos.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Base de datos y separación lógica}
+La tabla \code{voters(username, password\_hash, has\_voted)} almacena credenciales de prueba y participación. La tabla \code{ballots} almacena sobres cifrados, nonces y hashes de integridad sin incluir el identificador del votante. \code{settings} conserva el estado abierto/cerrado.
+
+\textbf{Limitación:} aunque no existe una columna explícita que relacione votante y selección, el mismo sistema web sigue observando autenticaciones, solicitudes y tiempos. Sin tecnologías de credenciales ciegas, redes anónimas y controles adicionales, no se garantiza desvinculación criptográfica fuerte.
+
+\subsection{Pseudocódigo del registro de voto}
+\begin{lstlisting}
+FUNCION registrar_voto(usuario, sobre):
+    validar_estructura(sobre)
+    comenzar_transaccion_inmediata()
+    SI eleccion_cerrada(): RECHAZAR
+    SI actualizar_votante_si_no_voto(usuario) != 1:
+        RECHAZAR
+    recibo = SHA256(JSON_canonico(sobre))
+    anterior = ultimo_hash_o_genesis()
+    cadena = SHA256(anterior || indice || recibo)
+    guardar_sobre(sobre, recibo, anterior, cadena)
+    CONFIRMAR_TRANSACCION
+    RETORNAR recibo
+FIN FUNCION
+\end{lstlisting}
+\subsection{Diagrama de flujo: emisión}
+\begin{figure}[H]\centering
+\resizebox{0.85\linewidth}{!}{\input{docs/diagramas/flujo.tex}}
+\caption{Validación de la sesión, cifrado local, transacción atómica y emisión del recibo.}
+\end{figure}
+
+\subsection{Instrucciones de uso}
+\begin{lstlisting}
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python manage.py init
+python launcher.py
+# Abrir http://127.0.0.1:5000/login
+# En otra terminal, al concluir:
+python manage.py close
+python manage.py tally
+python manage.py verify
+python -m pytest -q
+\end{lstlisting}
+Los comandos administrativos se ejecutan \emph{localmente}; no se expone un botón web para cerrar o escrutar. El archivo \code{README.md} describe el procedimiento de demostración y las credenciales ficticias creadas al inicializar.
