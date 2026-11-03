@@ -6,7 +6,8 @@ import sqlite3
 from datetime import datetime, timezone
 
 from .config import DB_PATH, GENESIS_HASH
-from .config import sha256, envelope_receipt, canonical
+
+from .crypto import sha256, envelope_receipt, canonical
 
 def timestamp():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -14,6 +15,11 @@ def timestamp():
 
 def connection():
 
+    """
+    La conexion a la BD en sqlite
+    """
+
+    # necesito crear una carpeta aca
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     db = sqlite3.connect(DB_PATH, timeout=10)

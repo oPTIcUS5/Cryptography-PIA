@@ -47,8 +47,8 @@ def secure_write(path: Path, content: bytes):
 
 def generate_keys():
     """
-    Claves privadas unicamente para escrutinioo LOCAL
-    y firma de resultados
+    Claves privadas solo para escrutinioo LOCAL
+    y lafirma de resultados
     """
 
     DATA.mkdir(parents=True, exist_ok=True)
@@ -65,7 +65,7 @@ def generate_keys():
     serialization_best = serialization.BestAvailableEncryption
 
     values = [
-        encryption.private_bytes(serialization.Encoding.PEM, serialization.ParameterFormat.PKCS3,
+        encryption.private_bytes(serialization.Encoding.PEM, serialization.PrivateFormat.PKCS3,
                                  serialization.NoEncryption()),
         encryption.public_key().public_bytes(serialization.Encoding.PEM,
                                              serialization.PublicFormat.SubjectPublicKeyInfo),

@@ -1,4 +1,7 @@
-"""CLI administrativo local. No exponemos estos controles como rutas web."""
+"""
+CLI administrativo local. No exponemos estos controles como rutas web.
+"""
+
 import argparse
 import json
 from pathlib import Path

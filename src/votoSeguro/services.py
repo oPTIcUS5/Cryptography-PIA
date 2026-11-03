@@ -1,4 +1,7 @@
-"""Lógica de autenticación, escrutinio y publicación de resultados."""
+"""
+Lógica de autenticación, escrutinio y publicación de resultados.
+"""
+
 import json
 import secrets
 from argon2 import PasswordHasher
@@ -12,20 +15,29 @@ HASHER = PasswordHasher(time_cost=2, memory_cost=19456, parallelism=1)
 
 
 def demo_voters(number=5):
-    """Genera usuarios totalmente ficticios; nunca importa un padrón real."""
+    """
+    Genera usuarios totalmente ficticios
+    lit puro demo
+    """
+    # killed
     if not 1 <= number <= 20:
-        raise ValueError("Número de usuarios de prueba inválido")
+        raise ValueError("Numero de usuarios de prueba invalido")
+    
     create_database()
     results = []
+    
     with connection() as db:
         if db.execute("SELECT COUNT(*) FROM voters").fetchone()[0]:
-            raise ValueError("El padrón de demostración ya fue generado")
+            raise ValueError("El padron de demostracion ya fue generado")
+        
         for number_id in range(1, number + 1):
             user = f"demo{number_id:02}"
             password = secrets.token_urlsafe(14)
             db.execute("INSERT INTO voters(username,password_hash) VALUES(?,?)",
                        (user, HASHER.hash(password)))
+            
             results.append((user, password))
+
     return results
 
 
