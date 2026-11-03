@@ -65,7 +65,7 @@ def generate_keys():
     serialization_best = serialization.BestAvailableEncryption
 
     values = [
-        encryption.private_bytes(serialization.Encoding.PEM, serialization.PrivateFormat.PKCS3,
+        encryption.private_bytes(serialization.Encoding.PEM, serialization.PrivateFormat.PKCS8,
                                  serialization.NoEncryption()),
         encryption.public_key().public_bytes(serialization.Encoding.PEM,
                                              serialization.PublicFormat.SubjectPublicKeyInfo),
@@ -112,6 +112,9 @@ def encrypt_ballot_for_test(candidate_id):
     
     return {"wrapped_key": b64(wrapped), "nonce": b64(nonce), "ciphertext": b64(ciphertext)}
 
+
+def envelope_receipt(envelope):
+    return sha256(canonical({"election_id": ELECTION_ID, **envelope}))
 
 def decrypt_ballot(envelope):
     private = serialization.load_pem_private_key((DATA / "encryption_private.pem").read_bytes(), password=None)
