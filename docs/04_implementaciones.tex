@@ -65,6 +65,7 @@ FIN FUNCION
 \end{figure}
 
 \subsection{Instrucciones de uso}
+\textbf{Para MacOS}
 \begin{lstlisting}
 python3 -m venv .venv
 source .venv/bin/activate
@@ -72,10 +73,34 @@ python -m pip install -r requirements.txt
 python manage.py init
 python launcher.py
 # Abrir http://127.0.0.1:5000/login
+
 # En otra terminal, al concluir:
 python manage.py close
 python manage.py tally
 python manage.py verify
 python -m pytest -q
 \end{lstlisting}
-Los comandos administrativos se ejecutan \emph{localmente}; no se expone un botón web para cerrar o escrutar. El archivo \code{README.md} describe el procedimiento de demostración y las credenciales ficticias creadas al inicializar.
+
+\newpage
+\textbf{Para Windows}
+\begin{lstlisting}
+#1. Construir el entorno virtual
+py -m venv .venv
+
+#2. Activarlo
+.\.venv\Scripts\Activate.ps1
+
+#3. Instalar las bibliotecas (Si es la primera vez que se ejecuta)
+python -m pip install -r requirements.txt
+
+#4. Inicializar la urna
+python manage.py init
+
+#5. Iniciar el servidor
+python launcher.py
+
+#6. Abrir en el navegador (preferiblemente Chrome) http://127.0.0.1:5000/login
+bruh...
+por definir
+\end{lstlisting}
+Los comandos administrativos se ejecutan \emph{localmente}; no se expone un botón web para cerrar o escrutar. 
