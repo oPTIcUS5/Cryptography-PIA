@@ -7,20 +7,25 @@ from votoSeguro.config import ELECTION_ID, GENESIS_HASH
 
 
 def test_login_correct_and_wrong(election):
+
     username, password = election["creds"][0]
+
     assert election["services"].authenticate(username, password)
     assert not election["services"].authenticate(username, "no-es-la-contrasena")
     assert not election["services"].authenticate("nadie", password)
 
 
 def test_password_is_not_stored_as_plaintext(election):
+
     user, pwd = election["creds"][0]
     entry = election["storage"].get_voter(user)
+
     assert pwd not in entry["password_hash"]
     assert entry["password_hash"].startswith("$argon2id$")
 
 
 def test_encryption_decryption_roundtrip(election):
+
     c = election["crypto"]
     assert c.decrypt_ballot(c.encrypt_ballot_for_test("B")) == "B"
 
@@ -32,6 +37,7 @@ def test_ciphertext_modified_fails(election):
 
     blob = bytearray(c.unb64(sealed["ciphertext"]))
     blob[-1] ^= 1
+
     sealed["ciphertext"] = c.b64(blob)
 
     with pytest.raises(InvalidTag):
@@ -39,10 +45,14 @@ def test_ciphertext_modified_fails(election):
 
 
 def test_nonce_modified_fails(election):
+
     c = election["crypto"]
+    
     sealed = c.encrypt_ballot_for_test("A")
+
     b = bytearray(c.unb64(sealed["nonce"]))
     b[0] ^= 1
+    
     sealed["nonce"] = c.b64(b)
 
     with pytest.raises(InvalidTag):
