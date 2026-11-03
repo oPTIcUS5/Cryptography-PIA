@@ -1,5 +1,6 @@
 // Simula con Node la misma Web Crypto API que utiliza un navegador moderno.
 // Uso: node scripts/test_browser_crypto.mjs data/encryption_public.pem A
+
 import { readFileSync } from "node:fs";
 import { webcrypto } from "node:crypto";
 const { subtle } = webcrypto;
