@@ -28,7 +28,7 @@ function toBase64(bytes) {
 }
 
 
-async function encryptvote(election, candidate) {
+async function encryptVote(election, candidate) {
     
     if(!crypto?.subtle || !crypto?.getRandomValues) {
         throw new Error("Navegador sin web crypto API. Usa https o localhost")
