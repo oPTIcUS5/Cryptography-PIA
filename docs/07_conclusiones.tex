@@ -1,9 +1,34 @@
 \section{Conclusiones}
+
+\subsection{Conclusion general}
 VotoSeguro ejemplifica cómo varios mecanismos criptográficos pueden colaborar en un protocolo de votación electrónica simulado. Argon2id protege las contraseñas almacenadas; RSA-OAEP y AES-GCM permiten transmitir un voto en forma cifrada; las transacciones SQLite impiden la duplicación por cuenta; SHA-256 detecta alteraciones del registro encadenado; y Ed25519 autentica el manifiesto final publicado.
 
 La selección de algoritmos depende de su función: el cifrado simétrico es adecuado para el contenido de las boletas, el asimétrico sirve para transportar su clave, los hashes para registrar huellas y las firmas para autenticar resultados. Ningún método por sí solo resuelve todos los requisitos.
 
 El prototipo también permite reconocer límites importantes: una autoridad honesta sigue siendo un supuesto de confianza, no se ha demostrado anonimato completo frente a correlación de metadatos, no existe un mecanismo matemático de escrutinio públicamente verificable y el sistema local no está preparado para una elección oficial. Por tanto, su propósito es \textbf{didáctico y experimental}, no electoral operativo.
+
+\newpage
+\subsection{Conclusiones individuales}
+\textbf{Axel Ivan Verastegui Patino - 2091219}:
+\newline
+Al realizar este proyecto nos dimos cuenta de que crear un sistema de votación electrónica seguro es mucho más complicado de lo que parece. Al principio podría pensarse que basta con registrar usuarios y contar votos, pero existen muchos aspectos que debemos considerar, como evitar votos duplicados, proteger las contraseñas y verificar que los resultados no hayan sido alterados. 
+Aunque logramos desarrollar un prototipo funcional, entendimos que un sistema utilizado en elecciones reales necesitaría muchas más pruebas, medidas de seguridad y supervisión antes de poder implementarse.\\
+
+\textbf{Julio Cesar Puente Reynoso - 2115192}:
+\newline
+text.\\
+
+\textbf{Cecilia Ximena Gonzales Chavez - 2069031}:
+\newline
+bruh.\\
+
+\textbf{Diego Alejandro Puente Ruiz - 2095327}:
+\newline
+thfck.\\
+
+\textbf{Sebastian Flores Gonzales - 2104564}:
+\newline
+ more xmore\\
 
 \section*{Referencias bibliográficas}
 \addcontentsline{toc}{section}{Referencias bibliográficas}
@@ -16,13 +41,3 @@ El prototipo también permite reconocer límites importantes: una autoridad hone
 \bibitem{nistgcm} NIST. \emph{SP 800-38D: Recommendation for Block Cipher Modes of Operation: GCM and GMAC}. \url{https://doi.org/10.6028/NIST.SP.800-38D}
 \bibitem{rfc8032} Josefsson y Liusvaara. \emph{RFC 8032: Edwards-Curve Digital Signature Algorithm (EdDSA)}. \url{https://www.rfc-editor.org/rfc/rfc8032}
 \end{thebibliography}
-
-\appendix
-\section{Guía para defender el proyecto ante el docente}
-\begin{enumerate}
-\item ¿Por qué no se cifra directamente el voto con RSA? Porque RSA-OAEP se utiliza para una clave simétrica pequeña y AES-GCM cifra los datos con eficiencia.
-\item ¿Cómo se evita votar dos veces? Un \code{UPDATE} condicional y transacción \code{BEGIN IMMEDIATE} hacen atómica la decisión.
-\item ¿Qué significa el hash del recibo? Identifica el sobre cifrado guardado, no representa el candidato ni demuestra el recuento correcto.
-\item ¿Por qué Ed25519? Firma la publicación final y permite detectar cambios posteriores no firmados por la autoridad.
-\item ¿Qué problema queda sin resolver? La verificabilidad pública completa, la coacción, el malware del equipo y la desvinculación fuerte de identidad-voto.
-\end{enumerate}
