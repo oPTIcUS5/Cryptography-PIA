@@ -131,7 +131,7 @@ def decrypt_ballot(envelope):
         raise ValueError("Formato interno incorrecto")
     
     if message["election_id"] != ELECTION_ID:
-        raise ValueError("Elección incorrecta")
+        raise ValueError("[ERROR ] eleccion incorrecta")
     
     return message["candidate_id"]
 
