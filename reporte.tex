@@ -5,24 +5,30 @@
 \usepackage{lmodern}
 \usepackage{geometry}
 \geometry{margin=2.35cm}
+
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage{booktabs,longtable,tabularx,array}
-\usepackage{xcolor,graphicx,float}
+\usepackage[table]{xcolor}
+\usepackage{graphicx,float}
 \usepackage{tikz}
+
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit}
 \usetikzlibrary{babel}
 \usepackage{fancyhdr}
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=blue!45!black,urlcolor=blue!55!black,pdftitle={VotoSeguro - PIA de Criptografía}}
 \usepackage{listings}
+
 \definecolor{navy}{HTML}{173054}
 \definecolor{bluea}{HTML}{2368AE}
 \definecolor{pale}{HTML}{F1F6FC}
 \definecolor{teal}{HTML}{168579}
 \definecolor{grayb}{HTML}{5C697B}
+
 \newcommand{\concepto}[1]{\textbf{\color{navy}#1}}
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\missingimage}[1]{\begin{center}\fcolorbox{bluea}{pale}{\parbox[c][2.2cm][c]{0.82\linewidth}{\centering\small\color{grayb}Evidencia pendiente: #1\\Captura auténtica al ejecutar en MacBook}}\end{center}}
+
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\textcolor{navy}{VotoSeguro -- PIA}}
@@ -37,27 +43,59 @@
 \begin{document}
 \begin{titlepage}
 \centering
-\vspace*{1.8cm}
+\vspace*{0.10cm}
+
+% logos institucionales
+\par\noindent
+\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}r@{}}
+    \includegraphics[
+        height=2.65cm,
+        keepaspectratio
+    ]{docs/Fotos-Universidad/logo fcfm.png}
+    &
+    \includegraphics[
+        height=2.65cm,
+        keepaspectratio
+    ]{docs/Fotos-Universidad/escudo_uanl.png}
+\end{tabular*}
+
+\par\vspace{0.40cm}
 {\Large\bfseries Proyecto Integrador de Aprendizaje\par}
 \vspace{0.45cm}
 {\color{bluea}\rule{0.82\linewidth}{2.2pt}\par}
-\vspace{1.0cm}
+\vspace{0.65cm}
 {\Huge\bfseries\color{navy}VotoSeguro\par}
 \vspace{0.32cm}
 {\Large Sistema de Votación Electrónica Segura\par}
-\vspace{.8cm}
+\vspace{.52cm}
 {\large Prototipo académico para una elección municipal ficticia\par}
-\vspace{.8cm}
-\fcolorbox{bluea}{pale}{\parbox{0.83\linewidth}{\centering\vspace{7pt}\textbf{Modelo de amenaza definido por el docente}\\La autoridad electoral es honesta. Se estudia la protección frente a ataques externos.\\No se propone el uso de este software en elecciones reales.\vspace{7pt}}}
+\vspace{.52cm}
+\fcolorbox{bluea}{pale}{\parbox{0.83\linewidth}{\centering\vspace{7pt}\textbf{Modelo de amenaza definido por el docente}\\La autoridad electoral es honesta. Se estudia la protección frente a ataques externos.\\\vspace{7pt}}}
 \vfill
-\begin{tabular}{>{\bfseries}p{4cm}p{8cm}}
-Alumno: & [Nombre completo]\\[5pt]
-Matrícula: & [Matrícula]\\[5pt]
-Materia: & Criptografía\\[5pt]
-Docente: & [Nombre del docente]\\[5pt]
-Institución: & [Institución]\\[5pt]
+{\large\bfseries\color{navy}Integrantes del equipo\par}
+\vspace{0.22cm}
+{\renewcommand{\arraystretch}{1.32}
+\rowcolors{2}{pale}{white}
+\begin{tabularx}{0.88\linewidth}{>{\centering\arraybackslash}p{0.95cm} X >{\centering\arraybackslash}p{3.1cm}}
+\rowcolor{navy}
+\color{white}\textbf{N.º} & \color{white}\textbf{Nombre completo} & \color{white}\textbf{Matrícula}\\
+1 & JULIO CÉSAR PUENTE REYNOSO & 2115192\\
+2 & CECILIA XIMENA GONZALEZ CHAVEZ & 2069031\\
+3 & SEBASTIAN FLORES GONZALES & 2104564\\
+4 & AXEL IVAN VERASTEGUI PATINO & 2091219\\
+5 & DIEGO ALEJANDRO PUENTE RUIZ & 2095327\\
+\end{tabularx}}
+
+\vspace{0.25cm}
+
+{\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{>{\bfseries\color{navy}}p{3cm}p{8.4cm}}
+Materia: & Criptografía\\
+Docente: & ALEJANDOR MUNIZ SOLORIO\\
+Institución: & Facultad de Ciencias Físico Matemáticas\\
 Entrega: & 14 de noviembre de 2026\\
-\end{tabular}
+\end{tabular}}
+
 \vfill
 Monterrey, Nuevo León, México\\2026
 \end{titlepage}

@@ -23,17 +23,56 @@ Cifrado JS/Python & Una boleta cifrada con Web Crypto (Node) es descifrable en P
 \subsection{Demostración de escrutinio desde la terminal}
 En una ejecución aislada con tres cuentas de prueba, se registraron las selecciones A, C y A; después de cerrar la elección, el programa generó un resultado de \textbf{2 votos para A, 0 para B y 1 para C}, sin boletas inválidas. La verificación de la firma Ed25519 y de la cadena devolvió un estado válido. Esta ejecución corresponde a datos ficticios generados para la validación del software.
 
-\subsection{Verificación pendiente en el equipo del alumno}
-\textbf{Aclaración metodológica:} se comprobó la lógica mediante tests, pero en el entorno de preparación no se pudo abrir el servidor Flask por falta de esa dependencia. El funcionamiento gráfico completo deberá verificarse con \code{python launcher.py} después de instalar \code{requirements.txt} en macOS. No se presentan capturas ficticias como si fueran resultados empíricos.
 
-\subsection{Capturas a incorporar}
-\missingimage{Formulario de inicio de sesión con usuario ficticio (sin contraseña)}
-\missingimage{Boleta y tres candidaturas ficticias}
-\missingimage{Comprobante SHA-256 de un voto confirmado}
-\missingimage{Intento repetido y rechazo del sistema}
-\missingimage{Auditoría, resultados y terminal con pytest}
+\subsection{Capturas}
+\textbf{> Inicio de sesión}
+\newline
+\includegraphics[width=.85\linewidth]{docs/evidencias/Formulario de inicio de sesión con usuario ficticio.png}
 
-Para sustituir cada recuadro en Overleaf, subir la captura a la carpeta \code{evidencias/} y reemplazar la instrucción \code{\\missingimage\{...\}} por \code{\\includegraphics[width=.85\\linewidth]\{evidencias/nombre.png\}}.
+\newpage
+\textbf{Menú de selección (3 candidatos)}
+\newline
+\includegraphics[width=.85\linewidth]{docs/evidencias/Boleta con 3 candidaturas ficticias.png}
 
-\subsection{Criterio para aceptar el PIA}
-El prototipo demuestra criptografía aplicada al contexto definido, pero se mantiene la distinción entre \emph{prueba unitaria exitosa} y \emph{certificación electoral}. El equipo deberá explicar explícitamente al evaluador esa diferencia.
+\newpage
+\textbf{Selección de uno de los 3 candidatos}
+\newline
+\includegraphics[width=.85\linewidth]{docs/evidencias/Boleta con la candidatura A seleccionada.png}
+
+\newpage
+\textbf{Comprobante de registro}
+\newline
+\includegraphics[width=.85\linewidth]{docs/evidencias/Comprobante con voto firmado.png}
+
+\newpage
+\textbf{Prohibición al querer votar de nuevo desde una cuenta que ya voto antes}
+\newline
+\includegraphics[width=.85\linewidth]{docs/evidencias/Intento rechzado.png}
+
+\textbf{Prueba de escrutinio (urna aun abierta)}
+\newline
+\includegraphics[width=.85\linewidth]{docs/evidencias/urna cerrda.png}
+
+\newpage
+\textbf{Prueba de los 5 votos de las 5 cuentas}
+\newline
+\includegraphics[width=.85\linewidth]{docs/evidencias/5 votos.png}
+
+\newpage
+\textbf{Prueba del resultado final}
+\newline
+\includegraphics[width=.85\linewidth]{docs/evidencias/Firma final y resultados.png}
+
+\textbf{Prueba de la terminal de comandos y de la validación de cadenas y firma}
+\newline
+\includegraphics[width=.85\linewidth]{docs/evidencias/Terminal con proceso.png}
+%--
+%--\missingimage{Formulario de inicio de sesión con usuario ficticio }
+%--\missingimage{la boleta y tres candidaturas ficticias}
+%--\missingimage{el fckin comprobante SHA-256 de un voto confirmado}
+%--\missingimage{y un ntento repetido y rechazo del sistema}
+%--\missingimage{la auditoria, resultados y la terminal con pytest}
+
+% NIGGAAA, Para sustituir cada recuadro en Overleaf, subir la captura a la carpeta \code{evidencias/} y reemplazar la instrucción \code{\\missingimage\{...\}} por \code{\\includegraphics[width=.85\\linewidth]\{evidencias/nombre.png\}}.
+
+% nigga thx
